@@ -1,0 +1,161 @@
+TRACKBALL ======
+0.753062
+0 0 0
+-0 -0 -0
+1 0 0 0
+1 0 0 0
+CLIPPING ======
+1 0 0 0 0
+0 1 0 0 0
+0 0 1 0 0
+-1 0 0 0 0
+0 -1 0 0 0
+0 0 -1 0 0
+mwtb->cplane->cutClipBut = 1
+mwtb->cplane->clipAmb = 1
+INTERSECT_COLOR = 1 0 0 1
+DATA_OPACITY ======
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+WIN_SZ = 710 710
+read_recalibrate = 1
+norot = 0
+transBgd = 0
+trimPNG = 0
+brcutNone = 1
+brcutPM1 = 0
+brcut01 = 0
+brcutPMpi = 0
+brcut02pi = 0
+vertdisp = 0
+vertDispAll = 0
+cnnxdisp = 0
+surfedgedisp = 0
+surfdisp = 1
+voldisp = 0
+draw_axes = 0
+AXES = 1 0 0
+dispAsSurf = 1
+dispAsVol = 0
+vertbut = 0
+cnnxbut = 0
+hilighton = 0
+hitettype = 0
+tethi = 0
+elehi = 0
+verthi = 0
+cnnxhi = 0
+verthi = 0
+cabhi = 0
+attachtype = 0
+veconbut = 1
+veccstype = Bl_Rainbow
+veclength = 1
+vecautocal = 0
+vecstride = 1
+vecstoch = 0
+vecheads = 1
+veclenmag = 1
+veclenscalar = 0
+veclenfix = 0
+veccolmag = 1
+veccolscalar = 0
+veccolfix = 0
+veccolmin = 0
+veccolmax = 0
+vecambient = 0.35
+vecdiffuse = 0.5
+vecspecular = 0.7
+vecMinSz = 0.05
+vecmaxlen = 0
+vecratio = 10
+lightorient = 0 0 1 0
+ambientslide = 0.4
+specularslide = 0.75
+diffuseslide = 0.6
+fresnelslide = 3
+facetshadBut = 0
+col_by_elem = 0
+illBut = 1
+lightCordSys = 0
+backface = 0
+surfvisbut = 1
+surfoutlinebut = 0
+surffillbut = 1
+auxgriddispbut = 1
+auxcstype = Bl_Rainbow
+auxclip = 0
+auxhivert = 0
+auxmincolval = 0
+auxmaxcolval = 0
+auxnumcolev = 64
+auxcsrev = 0
+auxautocalibratebut = 0
+auxptdat = 0
+auxptsize = 10
+auxptstyle = 1
+auxlinedat = 0
+auxlinewidth = 100
+auxlinestyle = 1
+auxsurfdat = 0
+auxsurfline = 5
+auxsurfstyle = 2
+auxvoldat = 0
+auxvolline = 5
+auxvolstyle = 1
+hiAuxVert = 0
+autocalibratebut = 0
+mincolval = -90
+maxcolval = 30
+numcolev = 512
+cstype = Bl_Rainbow
+csrev = 0
+tmslider = 0
+frameskip = 1
+animdelay = 10
+SURFACE_COLOURS = 1
+1 0.5 0.1 1 0.125 0.8 0.7 1 1 1 0 0.6 0.75 80 0.5
+SURFACE_CLIPPING = 1
+1 1 1 1 1 1 
+REGION_SIZE = 1
+1 1 1
+stride = 1 1 1
+REGION_3D = 1
+0 0 0
+REGION_COLOURS = 1
+0 1 0 1 0 0 0 1 1 0 1 0 1 1 0 1
+BGD_COLOUR = 1
+ISOLINE_COLOUR = 0 0 0 1
+mwtb->isosurfwin->isolineVal0 = 0
+mwtb->isosurfwin->isolineVal1 = 0
+mwtb->isosurfwin->isoNumLines = 1
+mwtb->isosurfwin->isolineThick = 1
+mwtb->isosurfwin->islDatify = 0
+mwtb->isosurfwin->isl3D = 0
+mwtb->isosurfwin->isolineOn = 0
+mwtb->isosurfwin->isoLineRestrict = 1
+mwtb->isosurfwin->isoptclose = 0
+mwtb->isosurfwin->numIsoSurf = 0
+mwtb->isosurfwin->isosurfOn = 0
+mwtb->isosurfwin->bfbright = 0.5
+mwtb->isosurfwin->isoSurfMin = 0
+mwtb->isosurfwin->isoSurfMax = 0
+mwtb->isosurfwin->surfsel = -1
+mwtb->isosurfwin->opacity = 1
+mwtb->isosurfwin->isoValIn = 0
+ISOSURF_CLIP = 1 1 1 1 1 1
+mwtb->deadData->minValid = 0
+mwtb->deadData->minValidVal = 0
+mwtb->deadData->maxValid = 0
+mwtb->deadData->maxValidVal = 1
+mwtb->deadData->nan = 0
+mwtb->deadData->showDeadData = 0
+DEAD_COLOUR = 0 0 0 1
+REF_SYNC_ROTATION = 1 0 0 0
+FLYBY_STATES = 0
+flyby->fb_delay = 100
+flyby->fb_tmadv = 0

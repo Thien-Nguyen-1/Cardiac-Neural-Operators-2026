@@ -1,0 +1,20 @@
+#############################################################
+#simID                    = Tuning_Wavelength_b10_Cable
+meshname                 = ./Mesh_1.5cm_Cable/mesh
+#############################################################
+dt                       = 10
+timedt                   = 1
+spacedt                  = 1
+experiment               = 0
+parab_solve              = 1
+mass_lumping             = 0
+bidomain		 = 0
+bidm_eqv_mono		 = 1
+#############################################################
+num_stim                 = 1
+#############################################################
+stim[0].ptcl.start        = 0
+stim[0].pulse.strength     = 250
+stim[0].ptcl.duration     = 5
+stim[0].crct.type     = 0
+stim[0].elec.vtx_file     = ./Mesh_1.5cm_Cable/stim

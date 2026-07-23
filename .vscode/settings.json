@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [
+      "./venv311/src/neuraloperator"
+    ]
+  }
+
+

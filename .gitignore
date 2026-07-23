@@ -1,0 +1,15 @@
+datasets/
+*.pt
+
+#remove any virtual environments
+venv311/
+
+#remove any hidden files 
+.DS_Store
+
+#remove any generated results
+Results_*
+
+#remove any cache files
+__pycache__
+

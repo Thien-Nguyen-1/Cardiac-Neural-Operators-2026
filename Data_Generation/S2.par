@@ -1,0 +1,17 @@
+# stimuli parameters 
+num_stim = 1
+stim[0].name = S2
+stim[0].ptcl.duration = 1
+stim[0].ptcl.start = 0
+stim[0].ptcl.npls = 1
+stim[0].ptcl.bcl = 1
+stim[0].crct.type = 0
+stim[0].pulse.strength = 100
+stim[0].elec.geom_type = 2
+stim[0].elec.p0[0] = -50000
+stim[0].elec.p0[1] = 0
+stim[0].elec.p0[2] = 0
+stim[0].elec.p1[0] = 0
+stim[0].elec.p1[1] = 50000
+stim[0].elec.p1[2] = 0
+stim[0].elec.domain = 1

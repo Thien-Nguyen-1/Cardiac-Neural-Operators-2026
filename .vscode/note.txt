@@ -1,0 +1,6 @@
+When installing neuralop library from github repository, the parameter -e (editable) causes
+the it to be installed in a different location
+A pointer file is created in the directory where libraries are normally installed to point
+to this location
+However, VSCode does static analysis; reads files without running them so it does not interpret
+the runtime pointer trick. Hence neuralop could not be read.

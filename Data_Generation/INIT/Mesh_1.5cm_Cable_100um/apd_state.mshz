@@ -1,0 +1,145 @@
+TRACKBALL ======
+1
+0 0 0
+-7500 -0 -0
+1 0 0 0
+1 0 0 0
+CLIPPING ======
+1 0 0 0 0
+0 1 0 0 0
+0 0 1 0 0
+-1 0 0 0 0
+0 -1 0 0 0
+0 0 -1 0 0
+1 0 0 -7500 0
+0 1 0 0 0
+0 0 1 0 0
+-1 0 0 7500 0
+0 -1 0 0 0
+0 0 -1 0 0
+DATA_OPACITY ======
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+0 0 0 1 0
+read_recalibrate = 4
+revdraworder = 0
+norot = 4
+transBgd = 0
+brcutNone = 4
+brcutPM1 = 0
+brcut01 = 0
+brcutPMpi = 0
+brcut02pi = 0
+vertdisp = 4
+cabledisp = 4
+cnnxdisp = 4
+surfedgedisp = 4
+surfdisp = 4
+voldisp = 4
+draw_axes = 0
+dispAsSurf = 1
+dispAsVol = 0
+vertbut = 0
+cabbut = 0
+cnnxbut = 1
+hilighton = 1
+hitettype = 0
+tethi = 0
+elehi = 0
+verthi = 0
+cnnxhi = 0
+verthi = 0
+cabhi = 0
+attachtype = 0
+veconbut = 1
+veccstype = 1
+veclength = 1
+vecautocal = 0
+vecstride = 1
+vecstoch = 0
+vecheads = 1
+veclenmag = 4
+veclenscalar = 0
+veclenfix = 0
+veccolmag = 4
+veccolscalar = 0
+veccolfix = 0
+veccolmin = 0
+veccolmax = 0
+lightx = 0
+lighty = 0
+lightz = 1
+ambientslide = 0
+specularslide = 0.75
+diffuseslide = 0.6
+showLightDir = 0
+facetshadBut = 0
+illBut = 0
+surfvisbut = 1
+surfoutlinebut = 0
+surffillbut = 1
+auxgriddispbut = 1
+auxcstype = 1
+auxmincolval = 0
+auxmaxcolval = 0
+auxnumcolev = 64
+auxautocalibratebut = 0
+auxptdat = 0
+auxptsize = 50
+auxptstyle = 2
+auxlinedat = 0
+auxlinewidth = 100
+auxlinestyle = 2
+auxsurfdat = 0
+auxsurfline = 10
+auxsurfstyle = 2
+auxvoldat = 0
+auxvolline = 10
+auxvolstyle = 1
+autocalibratebut = 0
+mincolval = 297.742
+maxcolval = 312.585
+numcolev = 64
+cstype = 1
+tmslider = 0
+frameskip = 1
+animdelay = 10
+SURFACE_COLOURS = 0
+REGION_SIZE = 1
+1 1 1
+stride = 1 1 1
+REGION_3D = 1
+0 0 0
+REGION_COLOURS = 1
+0 1 0 1 0 0 0 1 1 0 1 0 1 1 1 1
+BGD_COLOUR = 1
+ISOLINE_COLOUR = 0 0 0 1
+mwtb->isosurfwin->isolineVal0 = 0
+mwtb->isosurfwin->isolineVal1 = 0
+mwtb->isosurfwin->isoNumLines = 1
+mwtb->isosurfwin->isolineThick = 1
+mwtb->isosurfwin->islDatify = 0
+mwtb->isosurfwin->isl3D = 0
+mwtb->isosurfwin->isolineOn = 0
+mwtb->isosurfwin->isoOn0 = 0
+mwtb->isosurfwin->isoval0 = 0
+mwtb->isosurfwin->opacity0 = 1
+mwtb->isosurfwin->isoOn1 = 0
+mwtb->isosurfwin->isoval1 = 0
+mwtb->isosurfwin->opacity1 = 1
+mwtb->isosurfwin->isoLineRestrict = 1
+ISOSURF_COLOUR 0 = 1 0 0 1
+ISOSURF_COLOUR 1 = 0 0.8 0 1
+mwtb->deadData->minValid = 0
+mwtb->deadData->minValidVal = 0
+mwtb->deadData->maxValid = 0
+mwtb->deadData->maxValidVal = 1
+mwtb->deadData->deadopac = 1
+mwtb->deadData->showDeadData = 0
+DEAD_COLOUR = 0 0 0 1
+REF_SYNC_ROTATION = 1 0 0 0
+
