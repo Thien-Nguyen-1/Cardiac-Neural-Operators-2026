@@ -210,21 +210,46 @@ class FC_FNO(FNO):
 
         H2 = torch.einsum("co,bctxz->bcotxz", dW2, dP2) 
 
+        # if "dxx" in derivs_to_compute:
+        #     wxx1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dx, dW1, H2, dW1, dx)
+        #     wxx2 = torch.einsum("boitxz,bitxz->botxz", dQ, dxx)
+        #     wxxQ = wxx1 + wxx2
+        #     Dx_out.append(wxxQ)
+        # if "dyy" in derivs_to_compute:
+        #     wyy1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dy, dW1, H2, dW1, dy)
+        #     wyy2 = torch.einsum("boitxz,bitxz->botxz", dQ, dyy)
+        #     wyyQ = wyy1 + wyy2
+        #     Dx_out.append(wyyQ)
+        # if "dzz" in derivs_to_compute:
+        #     wzz1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dz, dW1, H2, dW1, dz)
+        #     wzz2 = torch.einsum("boitxz,bitxz->botxz", dQ, dzz)
+        #     wzzQ = wzz1 + wzz2
+        #     Dx_out.append(wzzQ)
+
+
         if "dxx" in derivs_to_compute:
-            wxx1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dx, dW1, H2, dW1, dx)
+            ux = torch.einsum("ci,bitxz->bctxz", dW1, dx)          # (B, C, T, X, Z)
+            wxx1 = torch.einsum("bcotxz,bctxz,bctxz->botxz", H2, ux, ux)
             wxx2 = torch.einsum("boitxz,bitxz->botxz", dQ, dxx)
             wxxQ = wxx1 + wxx2
             Dx_out.append(wxxQ)
+            del ux, wxx1, wxx2
+
         if "dyy" in derivs_to_compute:
-            wyy1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dy, dW1, H2, dW1, dy)
+            uy = torch.einsum("ci,bitxz->bctxz", dW1, dy)
+            wyy1 = torch.einsum("bcotxz,bctxz,bctxz->botxz", H2, uy, uy)
             wyy2 = torch.einsum("boitxz,bitxz->botxz", dQ, dyy)
             wyyQ = wyy1 + wyy2
             Dx_out.append(wyyQ)
+            del uy, wyy1, wyy2
+
         if "dzz" in derivs_to_compute:
-            wzz1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dz, dW1, H2, dW1, dz)
+            uz = torch.einsum("ci,bitxz->bctxz", dW1, dz)
+            wzz1 = torch.einsum("bcotxz,bctxz,bctxz->botxz", H2, uz, uz)
             wzz2 = torch.einsum("boitxz,bitxz->botxz", dQ, dzz)
             wzzQ = wzz1 + wzz2
             Dx_out.append(wzzQ)
+            del uz, wzz1, wzz2
 
         return Dx_out
 
