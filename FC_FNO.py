@@ -235,7 +235,7 @@ class FC_FNO(FNO):
        
         """FC_FNO's forward pass"""
 
-        derivs_to_compute = {} #{"dx", "dxx", "dy", "dyy", "dz", "dzz"}
+        derivs_to_compute = {"dx", "dxx", "dy", "dyy", "dz", "dzz"}
 
         print(x.shape)
 
@@ -339,6 +339,7 @@ class FC_FNO(FNO):
             if self.n_dim == 3:
                 X1 = Q1(x.permute(0, 2, 3, 4, 1))
                 Dx_arr = self.dQ_3D(X1, Dx_arr, Q1, Q2, derivs_to_compute)
+                print("The derivatives are ", Dx_arr)
             
             else:
                 raise ValueError(
@@ -351,6 +352,8 @@ class FC_FNO(FNO):
                 x = x.permute(0, 4, 1, 2, 3)
             
             return x, Dx_arr
+        
+
         else:
 
             x = self.FC_obj.restrict_signal(x)
