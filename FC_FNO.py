@@ -262,10 +262,10 @@ class FC_FNO(FNO):
 
         derivs_to_compute = {}
 
-        print(x.shape)
+        print("THE SHAPE IS ", x.shape)
 
-        if (x.dtype != torch.float64):
-            x = x.to(torch.float64)
+        # if (x.dtype != torch.float64):
+        #     x = x.to(torch.float64)
 
         
         output_shape = [None] * self.n_layers
