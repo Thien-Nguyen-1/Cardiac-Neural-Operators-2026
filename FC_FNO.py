@@ -6,7 +6,7 @@ from functools import partialmethod
 from typing import Tuple, List, Union, Literal
 Number = Union[float, int]
 
-torch.set_default_dtype(torch.float64)
+
 
 from neuralop.layers.embeddings import GridEmbeddingND, GridEmbedding2D
 from neuralop.layers.spectral_convolution import SpectralConv
@@ -264,8 +264,8 @@ class FC_FNO(FNO):
 
         print("THE SHAPE IS ", x.shape)
 
-        # if (x.dtype != torch.float64):
-        #     x = x.to(torch.float64)
+        if (x.dtype != torch.float64):
+            x = x.to(torch.float64)
 
         
         output_shape = [None] * self.n_layers
@@ -299,8 +299,6 @@ class FC_FNO(FNO):
 
       
         
-        
-
 
         x = self.FC_obj.restrict_signal(x)
 
@@ -312,6 +310,9 @@ class FC_FNO(FNO):
             x = self.projection(x.permute(0, 2, 3, 4, 1))
             x = x.permute(0, 4, 1, 2, 3)
 
+
+        x = x.to(torch.float32)
+        
         return x
         
             # ==================== PROJECTION OPERATION ===============================
