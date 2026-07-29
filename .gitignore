@@ -13,3 +13,4 @@ Results_*
 #remove any cache files
 __pycache__
 
+logs/
