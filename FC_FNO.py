@@ -127,8 +127,8 @@ class FC_FNO(FNO):
         )
 
         ## Convert FNO block weights to complex double precision for higher precision
-        for i in range(n_layers):
-            self.fno_blocks.convs[i].weight = self.fno_blocks.convs[i].weight.to(torch.cdouble)
+        # for i in range(n_layers):
+        #     self.fno_blocks.convs[i].weight = self.fno_blocks.convs[i].weight.to(torch.cdouble)
 
         self.FC_obj = FC_Legendre()
         self.projection_nonlinearity = projection_nonlinearity
@@ -141,7 +141,8 @@ class FC_FNO(FNO):
         )
 
 
-       
+       #make the entire model to float64 for extra precision in calculations
+        self.double()
        
    
 
@@ -150,7 +151,6 @@ class FC_FNO(FNO):
        
         """FC_FNO's forward pass"""
 
-        derivs_to_compute = {}
 
         print("THE SHAPE IS ", x.shape)
 
@@ -201,7 +201,7 @@ class FC_FNO(FNO):
             x = x.permute(0, 4, 1, 2, 3)
 
 
-        # x = x.to(torch.float32)
+        x = x.to(torch.float32)
 
         return x
         
