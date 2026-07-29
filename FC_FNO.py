@@ -142,118 +142,8 @@ class FC_FNO(FNO):
 
 
        
-        type(self).dQ_3D.__doc__ = self._dQ_DOCSTRING
        
-
-    
-    def dQ_3D(self, X1, Dx_arr, Q1, Q2, derivs_to_compute):
-
-       
-        Dx_out = []
-
-        need_dx = "dx" in derivs_to_compute or "dxx" in derivs_to_compute
-        need_dy = "dy" in derivs_to_compute or "dyy" in derivs_to_compute
-        need_dz = "dz" in derivs_to_compute or "dzz" in derivs_to_compute
-       
-        dx = Dx_arr["dx"] if need_dx else None
-        dy = Dx_arr["dy"] if need_dy else None
-        dz = Dx_arr["dz"] if need_dz else None
-
-        dxx = Dx_arr["dxx"] if "dxx" in derivs_to_compute else None
-        dyy = Dx_arr["dyy"] if "dyy" in derivs_to_compute else None
-        dzz = Dx_arr["dzz"] if "dzz" in derivs_to_compute else None
-
-        X1 = X1.permute(0, 4, 1, 2, 3)
-
-        B, C, T, X, Z = X1.shape
-        I = self.hidden_channels
-        O = self.out_channels
-
-        dW1 = Q1.weight
-        dW2 = Q2.weight.t()
-
-        if self.projection_nonlinearity == F.tanh:
-            dP1 = 1 / torch.cosh(X1) ** 2  # (B, C, T, X, Z)
-        elif self.projection_nonlinearity == F.silu:
-            dP1 = torch.sigmoid(X1) * (1 + X1 * (1 - torch.sigmoid(X1)))
-        else:
-            raise ValueError(
-                f"Projection nonlinearity {self.projection_nonlinearity} not supported. Must be F.tanh or F.silu"
-            )
-
-        dQ = torch.einsum("ci, bctxz, co -> boitxz", dW1, dP1, dW2)
-
-        if "dx" in derivs_to_compute:
-            wxQ = torch.einsum("boitxz,bitxz->botxz", dQ, dx)
-            Dx_out.append(wxQ)
-
-        if "dy" in derivs_to_compute:
-            wyQ = torch.einsum("boitxz,bitxz->botxz", dQ, dy)
-            Dx_out.append(wyQ)
-
-        if "dz" in derivs_to_compute:
-            wzQ = torch.einsum("boitxz,bitxz->botxz", dQ, dz)
-            Dx_out.append(wzQ)
-
-        if self.projection_nonlinearity == F.tanh:
-            dP2 = -2 * dP1 * torch.tanh(X1)
-        elif self.projection_nonlinearity == F.silu:
-            dP2 = (
-                torch.sigmoid(X1)
-                * (1 - torch.sigmoid(X1))
-                * (2 + X1 * (1 - 2 * torch.sigmoid(X1)))
-            )
-        else:
-            raise ValueError(
-                f"Projection nonlinearity {self.projection_nonlinearity} not supported. Must be F.tanh or F.silu"
-            )
-
-        H2 = torch.einsum("co,bctxz->bcotxz", dW2, dP2) 
-
-        # if "dxx" in derivs_to_compute:
-        #     wxx1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dx, dW1, H2, dW1, dx)
-        #     wxx2 = torch.einsum("boitxz,bitxz->botxz", dQ, dxx)
-        #     wxxQ = wxx1 + wxx2
-        #     Dx_out.append(wxxQ)
-        # if "dyy" in derivs_to_compute:
-        #     wyy1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dy, dW1, H2, dW1, dy)
-        #     wyy2 = torch.einsum("boitxz,bitxz->botxz", dQ, dyy)
-        #     wyyQ = wyy1 + wyy2
-        #     Dx_out.append(wyyQ)
-        # if "dzz" in derivs_to_compute:
-        #     wzz1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dz, dW1, H2, dW1, dz)
-        #     wzz2 = torch.einsum("boitxz,bitxz->botxz", dQ, dzz)
-        #     wzzQ = wzz1 + wzz2
-        #     Dx_out.append(wzzQ)
-
-
-        if "dxx" in derivs_to_compute:
-            ux = torch.einsum("ci,bitxz->bctxz", dW1, dx)          # (B, C, T, X, Z)
-            wxx1 = torch.einsum("bcotxz,bctxz,bctxz->botxz", H2, ux, ux)
-            wxx2 = torch.einsum("boitxz,bitxz->botxz", dQ, dxx)
-            wxxQ = wxx1 + wxx2
-            Dx_out.append(wxxQ)
-            del ux, wxx1, wxx2
-
-        if "dyy" in derivs_to_compute:
-            uy = torch.einsum("ci,bitxz->bctxz", dW1, dy)
-            wyy1 = torch.einsum("bcotxz,bctxz,bctxz->botxz", H2, uy, uy)
-            wyy2 = torch.einsum("boitxz,bitxz->botxz", dQ, dyy)
-            wyyQ = wyy1 + wyy2
-            Dx_out.append(wyyQ)
-            del uy, wyy1, wyy2
-
-        if "dzz" in derivs_to_compute:
-            uz = torch.einsum("ci,bitxz->bctxz", dW1, dz)
-            wzz1 = torch.einsum("bcotxz,bctxz,bctxz->botxz", H2, uz, uz)
-            wzz2 = torch.einsum("boitxz,bitxz->botxz", dQ, dzz)
-            wzzQ = wzz1 + wzz2
-            Dx_out.append(wzzQ)
-            del uz, wzz1, wzz2
-
-        return Dx_out
-
-     # derivs_to_compute = {"dx", "dxx", "dy", "dyy", "dz", "dzz"}
+   
 
     ## say if we want derivs to compute in the forward
     def forward(self, x, output_shape=None, **kwargs):
@@ -264,8 +154,8 @@ class FC_FNO(FNO):
 
         print("THE SHAPE IS ", x.shape)
 
-        if (x.dtype != torch.float64):
-            x = x.to(torch.float64)
+        # if (x.dtype != torch.float64):
+        #     x = x.to(torch.float64)
 
         
         output_shape = [None] * self.n_layers
@@ -311,8 +201,8 @@ class FC_FNO(FNO):
             x = x.permute(0, 4, 1, 2, 3)
 
 
-        x = x.to(torch.float32)
-        
+        # x = x.to(torch.float32)
+
         return x
         
             # ==================== PROJECTION OPERATION ===============================
