@@ -253,14 +253,14 @@ class FC_FNO(FNO):
 
         return Dx_out
 
-    
+     # derivs_to_compute = {"dx", "dxx", "dy", "dyy", "dz", "dzz"}
 
     ## say if we want derivs to compute in the forward
     def forward(self, x, output_shape=None, **kwargs):
        
         """FC_FNO's forward pass"""
 
-        derivs_to_compute = {"dx", "dxx", "dy", "dyy", "dz", "dzz"}
+        derivs_to_compute = {}
 
         print(x.shape)
 
@@ -270,16 +270,14 @@ class FC_FNO(FNO):
         
         output_shape = [None] * self.n_layers
 
-
+        # ==================== EXTENSION OPERATION ===============================
         if self.n_dim == 3:
             __, __, x_res, y_res, z_res = x.shape
             original = x
             x = self.FC_obj.extend_signal(x)
-            print("NEW SHAPE IS ", x.shape)
-            self.FC_obj.plot_results(original, x)
-       
         else:
             raise ValueError(f"Error: expected 3 dimensions, got {self.n_dim}")
+        # =========================================================================
 
 
         # append spatial pos embedding if set (extra features)
@@ -287,9 +285,11 @@ class FC_FNO(FNO):
             x = self.positional_embedding(x)
 
 
+        #======================== LIFTING OPERATION ===============================
+            
         x = self.lifting(x)
 
-
+        #=========================================================================
 
 
         for layer_idx in range(self.n_layers):
@@ -297,99 +297,24 @@ class FC_FNO(FNO):
             x = self.fno_blocks(x, layer_idx, output_shape=output_shape[layer_idx])
     
 
-        ## Compute derivatives if end or start
-        if derivs_to_compute:
-            Dx_arr = {}
-            deriv_tuples = []
-            
-            if self.n_dim == 3:
-                new_Lengths = (
-                    self.Lengths[0] * (x_res + self.FC_obj.get_n_additional_points()) / x_res,
-                    self.Lengths[1] * (y_res + self.FC_obj.get_n_additional_points()) / y_res,
-                    self.Lengths[2] * (z_res + self.FC_obj.get_n_additional_points()) / z_res,
-                )
-                FourierDiff3d = FourierDiff(dim=self.n_dim, L=new_Lengths)
-                dz_tuple = (0, 0, 1)
-                dy_tuple = (0, 1, 0)
-                dx_tuple = (1, 0, 0)
-                if "dz" in derivs_to_compute:
-                    deriv_tuples.append(dz_tuple)
-                if "dy" in derivs_to_compute:
-                    deriv_tuples.append(dy_tuple)
-                if "dx" in derivs_to_compute:
-                    deriv_tuples.append(dx_tuple)
-                if "dxx" in derivs_to_compute:
-                    dxx_tuple = (2, 0, 0)
-                    deriv_tuples.append(dxx_tuple)
-                if "dyy" in derivs_to_compute:
-                    dyy_tuple = (0, 2, 0)
-                    deriv_tuples.append(dyy_tuple)
-                if "dzz" in derivs_to_compute:
-                    dzz_tuple = (0, 0, 2)
-                    deriv_tuples.append(dzz_tuple)
-                if "dxx" in derivs_to_compute and "dx" not in derivs_to_compute:
-                    deriv_tuples.append(dx_tuple)
-                if "dyy" in derivs_to_compute and "dy" not in derivs_to_compute:
-                    deriv_tuples.append(dy_tuple)
-                if "dzz" in derivs_to_compute and "dz" not in derivs_to_compute:
-                    deriv_tuples.append(dz_tuple)
-                deriv_array = FourierDiff3d.compute_multiple_derivatives(x, derivatives = deriv_tuples)
-                for i, deriv_tuple in enumerate(deriv_tuples):
-                    if deriv_tuple == (0, 0, 1):
-                        Dx_arr["dz"] = self.FC_obj.restrict_signal(deriv_array[i])
-                    elif deriv_tuple == (0, 1, 0):
-                        Dx_arr["dy"] = self.FC_obj.restrict_signal(deriv_array[i])
-                    elif deriv_tuple == (1, 0, 0):
-                        Dx_arr["dx"] = self.FC_obj.restrict_signal(deriv_array[i])
-                    elif deriv_tuple == (2, 0, 0):
-                        Dx_arr["dxx"] = self.FC_obj.restrict_signal(deriv_array[i])
-                    elif deriv_tuple == (0, 2, 0):
-                        Dx_arr["dyy"] = self.FC_obj.restrict_signal(deriv_array[i])
-                    elif deriv_tuple == (0, 0, 2):
-                        Dx_arr["dzz"] = self.FC_obj.restrict_signal(deriv_array[i])
-
-            
-
-            Q1 = self.projection.fcs[0]  # first Linear layer
-            Q2 = self.projection.fcs[-1] # last Linear layer
-
-            ##.restrict_signal the extended input if start
-            x = self.FC_obj.restrict_signal(x)
-
-            print(x.shape)
-
-
-            ## Compute the derivatives w.r.t. the input
-            
-            if self.n_dim == 3:
-                X1 = Q1(x.permute(0, 2, 3, 4, 1))
-                Dx_arr = self.dQ_3D(X1, Dx_arr, Q1, Q2, derivs_to_compute)
-                print("The derivatives are ", Dx_arr)
-            
-            else:
-                raise ValueError(
-                    f"Error: expected 2 dimensions, got {self.n_dim}"
-                )
-
-            
-            if self.n_dim == 3:
-                x = self.projection(x.permute(0, 2, 3, 4, 1))
-                x = x.permute(0, 4, 1, 2, 3)
-            
-            return x, Dx_arr
+      
+        
         
 
-        else:
 
-            x = self.FC_obj.restrict_signal(x)
+        x = self.FC_obj.restrict_signal(x)
 
-            print(x.shape)
+        print(x.shape)
 
-            if self.n_dim == 3:
-                x = self.projection(x.permute(0, 2, 3, 4, 1))
-                x = x.permute(0, 4, 1, 2, 3)
+            # ==================== PROJECTION OPERATION ===============================
 
-            return x
+        if self.n_dim == 3:
+            x = self.projection(x.permute(0, 2, 3, 4, 1))
+            x = x.permute(0, 4, 1, 2, 3)
+
+        return x
+        
+            # ==================== PROJECTION OPERATION ===============================
 
     @property
     def n_modes(self):

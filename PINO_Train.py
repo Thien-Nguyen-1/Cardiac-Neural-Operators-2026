@@ -318,8 +318,9 @@ print('\n### --------- ###\n')
 ## ----------------------------------------------------------------------- ##
 
 
-# Building the FNO model structure for training l-3-FNO
-model = FC_FNO(n_modes=(8, 16, 16),
+
+# Building the FNO model structure for training 
+model = FNO(n_modes=(8, 16, 16),
              in_channels=args.ch, 
              out_channels=args.ch,
              hidden_channels=32, 

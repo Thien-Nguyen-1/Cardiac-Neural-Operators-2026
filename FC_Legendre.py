@@ -31,7 +31,7 @@ class FC_Legendre():
 
         
     def plot_results(self, original_data, new_data):
-        c = self.no_ext_points // 2  # 15 — offset on each side
+        c = self.no_ext_points // 2 
 
         od = original_data[0, 0, 0].cpu().numpy()
         nd = new_data[0, 0, 0].cpu().numpy()
@@ -46,7 +46,6 @@ class FC_Legendre():
 
 
         axs[1].imshow(nd, cmap='viridis', vmin=vmin, vmax=vmax)
-        # draw where the original data actually sits inside the extended array
         axs[1].add_patch(plt.Rectangle((c, c), W, H, edgecolor='red', facecolor='none', lw=1))
         axs[1].set_title("Continuation (red box = original region)")
         plt.show()
