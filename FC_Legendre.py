@@ -34,7 +34,7 @@ class FC_Legendre():
         c = self.no_ext_points // 2 
 
         od = original_data[0, 0, 0].cpu().numpy()
-        nd = new_data[0, 0, 0].cpu().numpy()
+        nd = new_data[0, 0, c].cpu().numpy()
         H, W = od.shape
 
         vmin, vmax = od.min(), od.max()

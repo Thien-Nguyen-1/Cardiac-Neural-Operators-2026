@@ -59,10 +59,12 @@ def process_training_log(dataset_paths):
     #set up line chart to display data
     x_axis = np.arange(0, len(all_training_err[0]))
         
-    plt.plot(x_axis, all_training_err[0], color="red")
-    plt.plot(x_axis, all_training_err[1], color = "green")
+    plt.plot(x_axis, all_training_err[0], color="red", label="fc-legendre")
+    plt.plot(x_axis, all_training_err[1], color = "green", label ="zero-padding")
     plt.ylabel("training error")
     plt.xlabel("epoch")
+
+    plt.legend()
     plt.show()
         
 
