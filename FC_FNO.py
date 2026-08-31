@@ -397,12 +397,12 @@ class FC_FNO(FNO):
 
         }  
 
-        for deriv, tup in derivative_tuples:
+        for deriv, tup in derivative_tuples.items():
             derivative = FourierDiff3d.compute_multiple_derivatives(x, derivatives=[tup])[0]
 
             Dx_arr[deriv] = self.FC_obj.restrict_signal(derivative)
 
-        
+
 
         print("computed derivatives")
 
