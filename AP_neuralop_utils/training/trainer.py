@@ -483,6 +483,12 @@ class Trainer:
         else:
             out = self.model(**sample)
 
+
+        #check whether returned output is a tuple of values or not (indicates FC_FNO model used or not)
+        if isinstance(out, tuple):
+            out  = out[0]
+            Dx_arr = out[1]
+
         
         if self.epoch == 0 and idx == 0 and self.verbose and isinstance(out, torch.Tensor):
             print(f"Raw outputs of shape {out.shape}")
@@ -497,7 +503,8 @@ class Trainer:
         loss_kwargs = {
             "y_pred": out,
             "y": sample.get("y", None),
-            "x": sample.get("x", None)
+            "x": sample.get("x", None),
+            "Dx_arr": Dx_arr
         }
 
         # Compute weighted loss

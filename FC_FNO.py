@@ -327,7 +327,7 @@ class FC_FNO(FNO):
         else:
             raise ValueError(f"Error: expected 3 dimensions, got {self.n_dim}")
         # =========================================================================
-
+        
 
         # append spatial pos embedding if set (extra features)
         if self.positional_embedding is not None:
@@ -400,7 +400,7 @@ class FC_FNO(FNO):
         X1 = Q1(x.permute(0,2,3,4,1))
         Dx_arr = self.dQ_3D(X1, Dx_arr, Q1, Q2, derivs_to_compute)
 
-        print(Dx_arr.keys())
+        
 
       
         # ==================== PROJECTION OPERATION ===============================
@@ -410,9 +410,7 @@ class FC_FNO(FNO):
         x = x.permute(0, 4, 1, 2, 3)
 
 
-        # x = x.to(torch.float32)
-
-        return x
+        return x, Dx_arr
         
         # ==================== PROJECTION OPERATION ===============================
 
