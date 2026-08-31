@@ -387,6 +387,8 @@ class FC_FNO(FNO):
 
         #attempt memory-efficiency
 
+        Dx_arr = {}
+
         derivative_tuples = {
             "dx": (1,0,0),
             "dxx": (2,0,0),
