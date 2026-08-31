@@ -462,7 +462,7 @@ trainer = Trainer(model=model, n_epochs=args.init_epochs,
                   device=device,
                   data_processor=data_processor,
                   wandb_log=True,
-                  eval_interval=10,
+                  eval_interval=1,
                   use_distributed=False,
                   verbose=True
                   )
@@ -584,7 +584,7 @@ trainer = Trainer(model=model, n_epochs=args.epochs + args.init_epochs,
                   device=device,
                   data_processor=data_processor,
                   wandb_log=True,
-                  eval_interval=100,
+                  eval_interval=1,
                   use_distributed=False,
                   verbose=True
                   )
