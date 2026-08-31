@@ -33,7 +33,7 @@ from neuralop.losses import H1Loss
 from neuralop.losses.data_losses import MSELoss, HdivLoss
 
 from neuralop.losses import Aggregator, SoftAdapt, Relobralo
-from AP_neuralop_utils import RMSELoss, APLoss, WeightedSumLoss, LpLoss, BoundaryLoss, ICLoss, BCNeumann, APFFTLoss, AdaptiveTrainingLoss
+from AP_neuralop_utils import RMSELoss, APLoss, WeightedSumLoss, LpLoss, BoundaryLoss, ICLoss, BCNeumann, APFFTLoss, AdaptiveTrainingLoss, APFC_Loss
 
 from FC_FNO import FC_FNO
 import ast
@@ -389,17 +389,37 @@ apfdm = APLoss( k=args.K,
                  V_amp = V_amp
 )
 
+
+apfc = APFC_Loss(
+    k=args.K, 
+    a=args.a, 
+    epsilon=args.epsilon, 
+    mu1=args.mu1, 
+    mu2=args.mu2, 
+    b=args.b, 
+    D=args.D, 
+    Lt=float(time_boundary), 
+    t_scale=args.t_scale
+)
+
+
+
+
 # Determine which losses to use for training based on physics loss weight
 # resloss is the physics-based loss (either FDM or FFT) l-2-define-loss
 
-if args.phys_method == "finite_difference":
-    resloss = apfdm
-    print("Calculating Residual Loss via Finite Difference")
-elif args.phys_method == "finite_difference_fft":
-    resloss = apfft
-    print("Calculating Residual Loss via FFT Finite Difference")
-else:
-     print("Unknown method for residual loss calculation!")
+
+resloss = apfc
+
+
+# if args.phys_method == "finite_difference":
+#     resloss = apfdm
+#     print("Calculating Residual Loss via Finite Difference")
+# elif args.phys_method == "finite_difference_fft":
+#     resloss = apfft
+#     print("Calculating Residual Loss via FFT Finite Difference")
+# else:
+#      print("Unknown method for residual loss calculation!")
 
 # --- Define a physics-only loss for evaluation ---
 phys_eval_loss = WeightedSumLoss(

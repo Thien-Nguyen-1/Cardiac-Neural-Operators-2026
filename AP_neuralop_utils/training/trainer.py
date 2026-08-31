@@ -485,9 +485,11 @@ class Trainer:
 
 
         #check whether returned output is a tuple of values or not (indicates FC_FNO model used or not)
+        Dx_arr = None
         if isinstance(out, tuple):
-            out  = out[0]
             Dx_arr = out[1]
+            out  = out[0]
+            
 
         
         if self.epoch == 0 and idx == 0 and self.verbose and isinstance(out, torch.Tensor):

@@ -538,7 +538,7 @@ class APFFTLoss(object):
         B, C, T, H, W = u.shape
         assert C == 2, "Expected 2 channels (V, W)"
         # Extract the Voltage and Recovery channels 
-        V_pred = u[:, 0] # [B, T, H, W]
+        V_pred = u[:, 0] # [B, T, H, W] 
         W_pred = u[:, 1] # [B, T, H, W]
 
         # Verify the shape of each field tensor 
@@ -687,4 +687,97 @@ class APFFTLoss(object):
 
 
 
+class APFC_Loss(object):
+    # Defining the AP model parameters:
+    def __init__(self, 
+                 D=1.0, k=8.0, a=0.15, epsilon=0.002, mu1=0.2, mu2=0.3, b=0.15,
+                 Lx = 10.0,
+                 Ly = 10.0,
+                 Lt = 50,
+                 t_scale = 12.9,
+                 v_loss_weighting=1.0, 
+                 w_loss_weighting=1.0,
+                 device = 'cuda'
+                 ):
+        super().__init__()
+    
+        ## Assign the parameters ##
+        self.device = device
+
+        #PDE parameters
+        self.D = D
+        self.k = k
+        self.a = a
+        self.epsilon = epsilon
+        self.mu1 = mu1
+        self.mu2 = mu2
+        self.b = b
+        self.t_scale = t_scale
+       
+        # Loss calculation parameters
+        self.v_loss_weighting = v_loss_weighting
+        self.w_loss_weighting = w_loss_weighting 
+ 
+        # Coordinate calculation parameters 
+        self.Lx = Lx
+        self.Ly = Ly
+        self.Lt = Lt
+
+   
+    def FFT_res(self, u, Dx_arr):
+        B, C, T, H, W = u.shape
+        assert C == 2, "Expected 2 channels (V, W)"
+        V_pred, W_pred = u[:, 0], u[:, 1]  # [B, T, H, W]
+
+       
+        ut = Dx_arr['dz'][:,0] #derivative of voltage prediction
+        vt = Dx_arr['dz'][:,1] #derivative of current prediction
+        diff_term = Dx_arr['dxx'][:,0] + Dx_arr['dyy'][:,1] #diffusion term for delta^2 V
+
         
+        # Clamp to avoid explosion
+        u_c = torch.clamp(V_pred, -10.0, 10.0)
+        v_c = torch.clamp(W_pred, -10.0, 10.0)
+
+        # Safe denominator for v/(v+mu2)
+        eps = 1e-8
+        den = u_c + self.mu2 + eps
+        safe_frac = self.mu1 * v_c / den
+
+        # Residuals
+        Du = ut - self.D * diff_term + self.k * u_c * (u_c - self.a) * (u_c - 1) - u_c * v_c
+        Dv = vt - (self.epsilon + safe_frac) * (-v_c - self.k * u_c * (u_c - self.b - 1))
+
+
+        return Du, Dv
+   
+    ## ----------------------------------------------------------------------- ##
+    # Running the PDE residual loss model 
+    ## ----------------------------------------------------------------------- ##
+
+    # Load the tensors (y_pred, y, x) that contain the data from the V and W channels. 
+    def __call__(self, *, y_pred: torch.Tensor, Dx_arr: dict, **kwargs):
+
+        print("LOSS ROUND CALCULATIONS OCCURING")
+      
+        if y_pred is None:
+            raise ValueError("y_pred must be provided to compute APFFTLoss.")
+
+        if torch.isnan(y_pred).any() or torch.isinf(y_pred).any():
+            raise RuntimeError("y_pred contains NaN or Inf before residual calculation")
+
+
+
+        print("DX_ARR RECEIVED, KEYS ARE ", Dx_arr.keys())
+
+
+        Du, Dv = self.FFT_res(y_pred)
+        loss_V = torch.mean(Du ** 2)
+        loss_W = torch.mean(Dv ** 2)
+
+        res_loss = self.v_loss_weighting * loss_V + self.w_loss_weighting * loss_W
+
+        #print('--Physics Loss (FFT)--')
+        #print(f"FFT residual loss: {res_loss.item():.6f}")
+
+        return res_loss
