@@ -580,17 +580,39 @@ class Trainer:
         }
 
         eval_step_losses = {}
+
+
+        # for loss_name, loss in eval_losses.items():
+        #     try:
+        #         # Filter kwargs per loss signature
+        #         sig = inspect.signature(loss.__call__)
+        #         filtered_kwargs = {k: v for k, v in loss_kwargs.items() if k in sig.parameters}
+        #         eval_step_losses[loss_name] = loss(**filtered_kwargs)
+        #     except TypeError:
+        #         # fallback for losses that ignore query points
+        #         filtered_kwargs = {k: v for k, v in sample.items() if k in sig.parameters}
+        #         filtered_kwargs["y_pred"] = out
+        #         eval_step_losses[loss_name] = loss(**filtered_kwargs)
+
+
         for loss_name, loss in eval_losses.items():
             try:
-                # Filter kwargs per loss signature
+                # Try passing full kwargs first (matches training-time behavior,
+                # and lets meta-losses like WeightedSumLoss forward Dx_arr via **kwargs)
+                eval_step_losses[loss_name] = loss(**loss_kwargs)
+            except TypeError:
+                # Fallback: filter kwargs per loss signature for losses that
+                # don't accept the full set (e.g. no Dx_arr, no x)
                 sig = inspect.signature(loss.__call__)
                 filtered_kwargs = {k: v for k, v in loss_kwargs.items() if k in sig.parameters}
-                eval_step_losses[loss_name] = loss(**filtered_kwargs)
-            except TypeError:
-                # fallback for losses that ignore query points
-                filtered_kwargs = {k: v for k, v in sample.items() if k in sig.parameters}
-                filtered_kwargs["y_pred"] = out
-                eval_step_losses[loss_name] = loss(**filtered_kwargs)
+                try:
+                    eval_step_losses[loss_name] = loss(**filtered_kwargs)
+                except TypeError:
+                    # last resort: raw sample plus y_pred
+                    filtered_kwargs = {k: v for k, v in sample.items() if k in sig.parameters}
+                    filtered_kwargs["y_pred"] = out
+                    eval_step_losses[loss_name] = loss(**filtered_kwargs)
+
 
         if return_output:
             return eval_step_losses, out
