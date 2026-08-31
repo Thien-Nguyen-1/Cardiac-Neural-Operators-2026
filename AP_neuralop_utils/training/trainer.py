@@ -565,15 +565,18 @@ class Trainer:
         self.n_samples += sample["y"].size(0)
 
         out = self.model(**sample)
+        Dx_arr = None
 
         if isinstance(out, tuple):
+            Dx_arr = out[1]
             out = out[0]
         
         # Prepare kwargs for evaluation losses
         loss_kwargs = {
             "y_pred": out,
             "y": sample.get("y", None),
-            "x": sample.get("x", None)
+            "x": sample.get("x", None),
+            "Dx_arr": Dx_arr
         }
 
         eval_step_losses = {}
