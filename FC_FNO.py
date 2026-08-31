@@ -375,6 +375,8 @@ class FC_FNO(FNO):
 
         }  
 
+        
+
         #for memory efficiency instead of computing all derivatives simulatenously
         for deriv, tup in derivative_tuples.items():
             derivative = FourierDiff3d.compute_multiple_derivatives(x, derivatives=[tup])[0]

@@ -749,8 +749,8 @@ class APFC_Loss(object):
 
         
         # Clamp to avoid explosion
-        u_c = torch.clamp(V_pred, -10.0, 10.0)
-        v_c = torch.clamp(W_pred, -10.0, 10.0)
+        # u_c = torch.clamp(V_pred, -10.0, 10.0)
+        # v_c = torch.clamp(W_pred, -10.0, 10.0)
 
         # --- Rescale fields into AU space (matches AP model constants) ---
         u_c = (V_pred - self.V_rest) / self.V_amp
@@ -760,11 +760,11 @@ class APFC_Loss(object):
 
         # --- Rescale derivatives by the SAME linear factors ---
         # d(V_au)/dt = (1/V_amp) * d(V_raw)/dt   (V_rest is constant, drops out of derivative)
-        ut = Dx_arr['dz'][:, 0] / self.V_amp
-        vt = Dx_arr['dz'][:, 1] / self.W_amp
+        ut = Dx_arr['dx'][:, 0] / self.V_amp
+        vt = Dx_arr['dx'][:, 1] / self.W_amp
 
         # d^2(V_au)/dx^2 = (1/V_amp) * d^2(V_raw)/dx^2
-        diff_term = (Dx_arr['dxx'][:, 0] + Dx_arr['dyy'][:, 0]) / self.V_amp
+        diff_term = (Dx_arr['dzz'][:, 0] + Dx_arr['dyy'][:, 0]) / self.V_amp
         # NOTE: also fixing a likely bug below (see callout)
 
         # Safe denominator for v/(v+mu2)
