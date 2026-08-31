@@ -713,6 +713,15 @@ class APFC_Loss(object):
         self.mu2 = mu2
         self.b = b
         self.t_scale = t_scale
+
+        # V_rest = -80.0, #
+                #  V_amp = 100.0,#
+                #  W_rest = 0.0, #
+                #  W_amp = 1.0,#
+        # self.V_rest = V_rest
+        # self.V_amp = V_amp
+        # self.W_rest = W_rest
+        # self.W_amp = W_amp
        
         # Loss calculation parameters
         self.v_loss_weighting = v_loss_weighting
@@ -732,12 +741,27 @@ class APFC_Loss(object):
        
         ut = Dx_arr['dz'][:,0] #derivative of voltage prediction
         vt = Dx_arr['dz'][:,1] #derivative of current prediction
-        diff_term = Dx_arr['dxx'][:,0] + Dx_arr['dyy'][:,1] #diffusion term for delta^2 V
+        diff_term = Dx_arr['dxx'][:,0] + Dx_arr['dyy'][:,0] #diffusion term for delta^2 V
 
         
         # Clamp to avoid explosion
         u_c = torch.clamp(V_pred, -10.0, 10.0)
         v_c = torch.clamp(W_pred, -10.0, 10.0)
+
+        # # --- Rescale fields into AU space (matches AP model constants) ---
+        # u_c = (V_pred - self.V_rest) / self.V_amp
+        # v_c = (W_pred - self.W_rest) / self.W_amp
+        # u_c = torch.clamp(u_c, -1.5, 1.5)   # sanity clamp in AU space, not raw space
+        # v_c = torch.clamp(v_c, -1.5, 1.5)
+
+        # # --- Rescale derivatives by the SAME linear factors ---
+        # # d(V_au)/dt = (1/V_amp) * d(V_raw)/dt   (V_rest is constant, drops out of derivative)
+        # ut = Dx_arr['dz'][:, 0] / self.V_amp
+        # vt = Dx_arr['dz'][:, 1] / self.W_amp
+
+        # # d^2(V_au)/dx^2 = (1/V_amp) * d^2(V_raw)/dx^2
+        # diff_term = (Dx_arr['dxx'][:, 0] + Dx_arr['dyy'][:, 0]) / self.V_amp
+        # # NOTE: also fixing a likely bug below (see callout)
 
         # Safe denominator for v/(v+mu2)
         eps = 1e-8
