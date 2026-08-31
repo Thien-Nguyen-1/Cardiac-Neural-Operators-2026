@@ -356,37 +356,7 @@ class FC_FNO(FNO):
 
         FourierDiff3d = FourierDiff(dim=self.n_dim, L=new_Lengths)
 
-        # dz_tuple = (0, 0, 1)
-        # dy_tuple = (0, 1, 0)
-        # dx_tuple = (1, 0, 0)
-
-        # dzz_tuple = (0,0,2)
-        # dyy_tuple = (0,2,0)
-        # dxx_tuple = (2,0,0)
-
-        # Dx_arr = {}
-        # deriv_tuples = [dz_tuple, dy_tuple, dx_tuple, dxx_tuple, dyy_tuple, dzz_tuple]
-
-        # deriv_array = FourierDiff3d.compute_multiple_derivatives(x, derivatives=deriv_tuples)
-
-
-        # for i, deriv_tuple in enumerate(deriv_tuples):
-        #     if deriv_tuple == (0, 0, 1):
-        #         Dx_arr["dz"] = self.FC_obj.restrict_signal(deriv_array[i])
-        #     elif deriv_tuple == (0, 1, 0):
-        #         Dx_arr["dy"] = self.FC_obj.restrict_signal(deriv_array[i])
-        #     elif deriv_tuple == (1, 0, 0):
-        #         Dx_arr["dx"] = self.FC_obj.restrict_signal(deriv_array[i])
-        #     elif deriv_tuple == (2, 0, 0):
-        #         Dx_arr["dxx"] = self.FC_obj.restrict_signal(deriv_array[i])
-        #     elif deriv_tuple == (0, 2, 0):
-        #         Dx_arr["dyy"] = self.FC_obj.restrict_signal(deriv_array[i])
-        #     elif deriv_tuple == (0, 0, 2):
-        #         Dx_arr["dzz"] = self.FC_obj.restrict_signal(deriv_array[i])
-
-
-        #attempt memory-efficiency
-
+        
         Dx_arr = {}
 
         derivative_tuples = {
@@ -399,6 +369,7 @@ class FC_FNO(FNO):
 
         }  
 
+        #for memory efficiency instead of computing all derivatives simulatenously
         for deriv, tup in derivative_tuples.items():
             derivative = FourierDiff3d.compute_multiple_derivatives(x, derivatives=[tup])[0]
 

@@ -565,6 +565,9 @@ class Trainer:
         self.n_samples += sample["y"].size(0)
 
         out = self.model(**sample)
+
+        if isinstance(out, tuple):
+            out = out[0]
         
         # Prepare kwargs for evaluation losses
         loss_kwargs = {
