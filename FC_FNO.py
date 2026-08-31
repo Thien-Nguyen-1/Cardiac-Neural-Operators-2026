@@ -187,7 +187,7 @@ class FC_FNO(FNO):
             # dx, dy, dt: spatial and time derivatives (B, I, T, X, Z)
             # dxx, dyy: second spatial derivatives (B, I, T, X, Z)
 
-            Dx_out = []
+            Dx_out = {}
 
             need_dx = "dx" in derivs_to_compute or "dxx" in derivs_to_compute
             need_dy = "dy" in derivs_to_compute or "dyy" in derivs_to_compute
@@ -233,17 +233,20 @@ class FC_FNO(FNO):
             # wxQ: spatial derivative of output in x-direction
             if "dx" in derivs_to_compute:
                 wxQ = torch.einsum("boitxz,bitxz->botxz", dQ, dx)
-                Dx_out.append(wxQ)
+                # Dx_out.append(wxQ)
+                Dx_out['dx'] = wxQ
 
             # wyQ: spatial derivative of output in y-direction
             if "dy" in derivs_to_compute:
                 wyQ = torch.einsum("boitxz,bitxz->botxz", dQ, dy)
-                Dx_out.append(wyQ)
+                # Dx_out.append(wyQ)
+                Dx_out['dy'] = wyQ
 
             # wzQ: time derivative of output
             if "dz" in derivs_to_compute:
                 wzQ = torch.einsum("boitxz,bitxz->botxz", dQ, dz)
-                Dx_out.append(wzQ)
+                # Dx_out.append(wzQ)
+                Dx_out['dz'] = wzQ
 
 
             
@@ -279,19 +282,22 @@ class FC_FNO(FNO):
                 wxx2 = torch.einsum("boitxz,bitxz->botxz", dQ, dxx)
                 # Combine both terms: D²(f∘g) = D²f(g) · (Dg)² + Df(g) · D²g
                 wxxQ = wxx1 + wxx2
-                Dx_out.append(wxxQ)
+                # Dx_out.append(wxxQ)
+                Dx_out['dxx'] = wxxQ
             # Compute second derivative in z-direction using chain rule
             # wzz1: first term of chain rule: J_g^T · H_f · J_g
             if "dyy" in derivs_to_compute:
                 wyy1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dy, dW1, H2, dW1, dy)
                 wyy2 = torch.einsum("boitxz,bitxz->botxz", dQ, dyy)
                 wyyQ = wyy1 + wyy2
-                Dx_out.append(wyyQ)
+                # Dx_out.append(wyyQ)
+                Dx_out['dyy'] = wyyQ
             if "dzz" in derivs_to_compute:
                 wzz1 = torch.einsum("bitxz,ci,bcotxz,cj,bjtxz->botxz", dz, dW1, H2, dW1, dz)
                 wzz2 = torch.einsum("boitxz,bitxz->botxz", dQ, dzz)
                 wzzQ = wzz1 + wzz2
-                Dx_out.append(wzzQ)
+                # Dx_out.append(wzzQ)
+                Dx_out['dzz'] = wzzQ
 
             # Return first and second derivatives as dictionary
 
