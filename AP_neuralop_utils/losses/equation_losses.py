@@ -697,7 +697,7 @@ class APFC_Loss(object):
                  t_scale = 12.9,
                  v_loss_weighting=1.0, 
                  w_loss_weighting=1.0,
-                 device = 'cuda'
+                 device = 'cpu'
                  ):
         super().__init__()
     

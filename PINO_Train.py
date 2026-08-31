@@ -170,7 +170,7 @@ sys.stdout = Tee(sys.__stdout__, log_file)
 
 
 #Set the device for training:
-device = 'cuda'
+device = 'cpu'
 
 
 ## ----------------------------------------------------------------------- ##
