@@ -767,9 +767,10 @@ class APFC_Loss(object):
             raise RuntimeError("y_pred contains NaN or Inf before residual calculation")
 
 
-
-        print("DX_ARR RECEIVED, KEYS ARE ", Dx_arr.keys())
-
+        print("DX_arr received, its type is ", type(Dx_arr))
+        print(Dx_arr)
+    
+        
 
         Du, Dv = self.FFT_res(y_pred)
         loss_V = torch.mean(Du ** 2)
