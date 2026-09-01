@@ -620,13 +620,13 @@ class APFFTLoss(object):
         vyy_h = -(2 * np.pi) ** 2 * (ky ** 2)[None, :, :, None] * v_h
 
         # Back to real space
-        uxx = torch.fft.ifftn(uxx_h, dim=[1, 2]).real
-        uyy = torch.fft.ifftn(uyy_h, dim=[1, 2]).real
+        uxx = (torch.fft.ifftn(uxx_h, dim=[1, 2]).real) / 100.0
+        uyy = (torch.fft.ifftn(uyy_h, dim=[1, 2]).real) / 100.0
         vxx = torch.fft.ifftn(vxx_h, dim=[1, 2]).real
         vyy = torch.fft.ifftn(vyy_h, dim=[1, 2]).real
 
         # Time derivatives (central difference)
-        ut = (V_pred[..., 2:] - V_pred[..., :-2]) / (2 * dt)
+        ut = (V_pred[..., 2:] - V_pred[..., :-2]) / (2 * dt) /100.0
         vt = (W_pred[..., 2:] - W_pred[..., :-2]) / (2 * dt)
 
 
@@ -638,7 +638,7 @@ class APFFTLoss(object):
         # u_mid = torch.clamp(u_mid, -10.0, 10.0)
         # v_mid = torch.clamp(v_mid, -10.0, 10.0)
 
-        u_mid = (V_pred[..., 1:-1] -80.0) / 100.0
+        u_mid = (V_pred[..., 1:-1] + 80.0) / 100.0
         v_mid = (W_pred[..., 1:-1] - 0) / 1
         u_mid = torch.clamp(u_mid, -1.5, 1.5)
         v_mid = torch.clamp(v_mid, -1.5, 1.5)
