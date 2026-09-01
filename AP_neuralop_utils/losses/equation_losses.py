@@ -638,8 +638,8 @@ class APFFTLoss(object):
         # u_mid = torch.clamp(u_mid, -10.0, 10.0)
         # v_mid = torch.clamp(v_mid, -10.0, 10.0)
 
-        u_mid = (V_pred[..., 1:-1] - self.V_rest) / self.V_amp
-        v_mid = (W_pred[..., 1:-1] - self.W_rest) / self.W_amp
+        u_mid = (V_pred[..., 1:-1] -80.0) / 100.0
+        v_mid = (W_pred[..., 1:-1] - 0) / 1
         u_mid = torch.clamp(u_mid, -1.5, 1.5)
         v_mid = torch.clamp(v_mid, -1.5, 1.5)
 
