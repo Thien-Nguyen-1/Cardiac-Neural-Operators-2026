@@ -630,13 +630,18 @@ class APFFTLoss(object):
         vt = (W_pred[..., 2:] - W_pred[..., :-2]) / (2 * dt)
 
 
-        # Mid-time slices
-        u_mid, v_mid = V_pred[..., 1:-1], W_pred[..., 1:-1]
+        # # Mid-time slices
+        # u_mid, v_mid = V_pred[..., 1:-1], W_pred[..., 1:-1]
 
 
-        # Clamp to avoid explosion
-        u_mid = torch.clamp(u_mid, -10.0, 10.0)
-        v_mid = torch.clamp(v_mid, -10.0, 10.0)
+        # # Clamp to avoid explosion
+        # u_mid = torch.clamp(u_mid, -10.0, 10.0)
+        # v_mid = torch.clamp(v_mid, -10.0, 10.0)
+
+        u_mid = (V_pred[..., 1:-1] - self.V_rest) / self.V_amp
+        v_mid = (W_pred[..., 1:-1] - self.W_rest) / self.W_amp
+        u_mid = torch.clamp(u_mid, -1.5, 1.5)
+        v_mid = torch.clamp(v_mid, -1.5, 1.5)
 
         # Safe denominator for v/(v+mu2)
         eps = 1e-8
