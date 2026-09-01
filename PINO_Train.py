@@ -79,7 +79,7 @@ if __name__ == "__main__":
     
     #Physics Loss Parameters 
     parser.add_argument('-phys', '--phys-loss', dest = 'phys_loss', action = "store_true", help = 'Toggle to train using the physics loss. Default is data only')
-    parser.add_argument('-p_meth', '--phys-meth', dest = 'phys_method', type = str, choices= {'finite_difference', 'finite_difference_fft', 'query_point'},  default = 'finite_difference', help = 'Method for calculating the physics loss. Default is %(default)s')
+    parser.add_argument('-p_meth', '--phys-meth', dest = 'phys_method', type = str, choices= {'finite_difference', 'finite_difference_fft', 'query_point', 'fourier_continuation'},  default = 'finite_difference', help = 'Method for calculating the physics loss. Default is %(default)s')
     parser.add_argument('-adapt', '--adapt', dest = 'adapt', type = float, choices= {1.0, 2.0, 3.0}, default = 1.0, help = 'Method for adapting the physics loss weights during PINO training. Default is %(default)s')
     
     
@@ -409,17 +409,21 @@ apfc = APFC_Loss(
 # resloss is the physics-based loss (either FDM or FFT) l-2-define-loss
 
 
-resloss = apfc
+# resloss = apfc
 
 
-# if args.phys_method == "finite_difference":
-#     resloss = apfdm
-#     print("Calculating Residual Loss via Finite Difference")
-# elif args.phys_method == "finite_difference_fft":
-#     resloss = apfft
-#     print("Calculating Residual Loss via FFT Finite Difference")
-# else:
-#      print("Unknown method for residual loss calculation!")
+if args.phys_method == "finite_difference":
+    resloss = apfdm
+    print("Calculating Residual Loss via Finite Difference")
+elif args.phys_method == "finite_difference_fft":
+    resloss = apfft
+    print("Calculating Residual Loss via FFT Finite Difference")
+elif args.phys_method == "fourier_continuation":
+    print("USING FOURIER CONTIUATION")
+    resloss = apfc
+
+else:
+     print("Unknown method for residual loss calculation!")
 
 # --- Define a physics-only loss for evaluation ---
 phys_eval_loss = WeightedSumLoss(
