@@ -594,8 +594,21 @@ trainer = Trainer(model=model, n_epochs=args.epochs + args.init_epochs,
                   )
 
 # Then train the model on the loaded dataset - save the best performing model according to given metric (default is the global mse score)
+# eval_metric = f"({args.eval_res}, {args.eval_con})_{args.eval_metric}"
+# print(f"Saving best model according to {eval_metric}")
+# json_log_path=os.path.join(results_path, "training_log.json")
+
 eval_metric = f"({args.eval_res}, {args.eval_con})_{args.eval_metric}"
-print(f"Saving best model according to {eval_metric}")
+if test_loaders:
+    print(f"Saving best model according to {eval_metric}")
+    save_best_arg = eval_metric
+    save_every_arg = None
+else:
+    print("No test set available for this dataset - skipping best-model "
+          "selection and checkpointing every epoch instead.")
+    save_best_arg = None
+    save_every_arg = 1
+
 json_log_path=os.path.join(results_path, "training_log.json")
 trainer.train(train_loader=train_loader,
               test_loaders=test_loaders,
@@ -605,10 +618,25 @@ trainer.train(train_loader=train_loader,
               training_loss=train_loss,
               eval_losses=eval_losses,
               resume_from_dir=results_path,
-              save_best = eval_metric,
+              save_best = save_best_arg,
+              save_every = save_every_arg,
               save_dir = results_path,
               json_log_path = json_log_path
               )
+
+
+# trainer.train(train_loader=train_loader,
+#               test_loaders=test_loaders,
+#               optimizer=optimizer,
+#               scheduler=scheduler, 
+#               regularizer=False, 
+#               training_loss=train_loss,
+#               eval_losses=eval_losses,
+#               resume_from_dir=results_path,
+#               save_best = eval_metric,
+#               save_dir = results_path,
+#               json_log_path = json_log_path
+#               )
 
 # Convert the json training log file into a valid file to read in the results analysis:
 training_log_json = os.path.join(results_path, "training_log.json")
