@@ -8,8 +8,8 @@ from neuralop.layers.fourier_continuation import FCLegendre, FCGram
 class FC_Legendre():
 
     def __init__(self) -> None:
-        self.no_ext_points = 30 #defines number of points to add on extension
-        self.extend_legendre = FCLegendre(d=3, n_additional_pts=self.no_ext_points)
+        self.no_ext_points = 20 #defines number of points to add on extension
+        self.extend_legendre = FCLegendre(d=5, n_additional_pts=self.no_ext_points)
    
 
     def extend_signal(self, data: torch.tensor):
