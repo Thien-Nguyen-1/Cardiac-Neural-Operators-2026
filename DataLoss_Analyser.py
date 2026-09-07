@@ -34,6 +34,15 @@ if __name__ == "__main__":
                         type = str, 
                         nargs = "+",
                         help='Input')
+    
+
+    parser.add_argument('-m',
+                        '--metric',
+                        dest='metric_path',
+                        required=True,
+                        type=str,
+                        choices={'train_err', 'phys_loss', 'mse', 'rmse'})
+
     args = parser.parse_args()
    
     
@@ -41,27 +50,42 @@ if __name__ == "__main__":
 
 
 
-def process_training_log(dataset_paths):
+def process_training_log(dataset_paths, metric):
 
-    all_training_err = []
+    valid_metrics = ["train_err", "phys_loss", "mse", "rmse"]
+    if metric not in valid_metrics:
+        print(f'${metric} is not in valid metrics')
+        return
+    
+    
+    key_map = {
+        "mse" : "(101, 1.0)_mse",
+        "rmse" : "(101, 1.0)_rmse",
+        "phys_loss" : "(101, 1.0)_phys_loss"
+    }
+
+    metric = key_map[metric] or metric
+
+    print(f"DISPLAYING ${metric.capitalize()}")
+
+    all_errors = []
 
 
     for path in dataset_paths:
         
-
         with open(path, "r") as file:
             data = json.load(file)
 
-        all_training_err.append([epoch['train_err'] for epoch in data])
+        all_errors.append([epoch[metric] for epoch in data])
             
 
         
     #set up line chart to display data
-    x_axis = np.arange(0, len(all_training_err[0]))
+    x_axis = np.arange(0, len(all_errors[0]))
         
-    plt.plot(x_axis, all_training_err[0], color="red", label="fc-legendre")
-    plt.plot(x_axis, all_training_err[1], color = "green", label ="zero-padding")
-    plt.ylabel("training error")
+    plt.plot(x_axis, all_errors[0], color="red", label="fc-legendre")
+    plt.plot(x_axis, all_errors[1], color = "green", label ="finite-diff-fft")
+    plt.ylabel(metric)
     plt.xlabel("epoch")
 
     plt.legend()
@@ -70,5 +94,6 @@ def process_training_log(dataset_paths):
 
 
 if len(args.data_path) == 2:
-    process_training_log(args.data_path)
-
+    process_training_log(args.data_path, args.metric_path)
+else:
+    print("unavailble")
