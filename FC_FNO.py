@@ -311,7 +311,7 @@ class FC_FNO(FNO):
        
         """FC_FNO's forward pass"""
 
-        derivs_to_compute = {"dt", "dtt", "dy", "dyy", "dx", "dxx"} #correspond to grid axis: time frames, height and width
+        derivs_to_compute = {"dt", "dy", "dyy", "dx", "dxx"} #correspond to grid axis: time frames, height and width
 
        
         output_shape = [None] * self.n_layers
