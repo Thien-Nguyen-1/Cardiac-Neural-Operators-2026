@@ -361,7 +361,6 @@ class FC_FNO(FNO):
 
         derivative_tuples = {
             "dt": (1,0,0),
-            "dtt": (2,0,0),
             "dy" : (0,1,0),
             "dyy" : (0,2,0),
             "dx": (0,0,1),
