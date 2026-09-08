@@ -8,7 +8,7 @@ from neuralop.layers.fourier_continuation import FCLegendre, FCGram
 class FC_Legendre():
 
     def __init__(self) -> None:
-        self.no_ext_points = 10 #defines number of points to add on extension
+        self.no_ext_points = 15 #defines number of points to add on extension
         self.extend_legendre = FCLegendre(d=3, n_additional_pts=self.no_ext_points)
    
 
