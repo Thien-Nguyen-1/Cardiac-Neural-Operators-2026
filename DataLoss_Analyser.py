@@ -41,7 +41,7 @@ if __name__ == "__main__":
                         dest='metric_path',
                         required=True,
                         type=str,
-                        choices={'train_err', 'phys_loss', 'mse', 'rmse'})
+                        choices={'train_err', 'phys_loss', 'mse', 'rmse', 'epoch_train_time'})
 
     args = parser.parse_args()
    
@@ -49,16 +49,17 @@ if __name__ == "__main__":
     
 
 
-
 def process_training_log(dataset_paths, metric):
 
-    valid_metrics = ["train_err", "phys_loss", "mse", "rmse"]
+    valid_metrics = ["train_err", "phys_loss", "mse", "rmse", "epoch_train_time"]
     if metric not in valid_metrics:
         print(f'${metric} is not in valid metrics')
         return
     
     
     key_map = {
+        "epoch_train_time": "epoch_train_time",
+        "train_err": "train_err",
         "mse" : "(101, 1.0)_mse",
         "rmse" : "(101, 1.0)_rmse",
         "phys_loss" : "(101, 1.0)_phys_loss"

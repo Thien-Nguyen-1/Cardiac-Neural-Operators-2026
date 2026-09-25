@@ -8,12 +8,11 @@ from neuralop.layers.fourier_continuation import FCLegendre, FCGram
 class FC_Legendre():
 
     def __init__(self) -> None:
-        self.no_ext_points = 14 #defines number of points to add on extension
-        self.extend_legendre = FCLegendre(d=3, n_additional_pts=self.no_ext_points)
+        self.no_ext_points = 10 # defines number of points to add on extension
+        self.extend_legendre = FCLegendre(d=3, n_additional_pts=self.no_ext_points) # parameter 'd' determines polynomial degree to fit boundary data
    
 
     def extend_signal(self, data: torch.tensor):
-        # periodic_signal = self.extend_legendre(data, dim=2)
 
         periodic_signal_xy = self.extend_legendre(data, dim = 3)
 

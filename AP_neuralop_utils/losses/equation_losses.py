@@ -738,7 +738,7 @@ class APFC_Loss(object):
         self.Lt = Lt
 
    
-    def FFT_res(self, u, Dx_arr):
+    def FC_FFT_res(self, u, Dx_arr):
         B, C, T, H, W = u.shape
         assert C == 2, "Expected 2 channels (V, W)"
         V_pred, W_pred = u[:, 0], u[:, 1]  # [B, T, H, W]
@@ -786,7 +786,7 @@ class APFC_Loss(object):
             raise RuntimeError("y_pred contains NaN or Inf before residual calculation")
 
 
-        Du, Dv = self.FFT_res(y_pred, Dx_arr)
+        Du, Dv = self.FC_FFT_res(y_pred, Dx_arr)
         loss_V = torch.mean(Du ** 2)
         loss_W = torch.mean(Dv ** 2)
 

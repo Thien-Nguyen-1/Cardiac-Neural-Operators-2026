@@ -306,7 +306,7 @@ class FC_FNO(FNO):
     
 
 
-    ## say if we want derivs to compute in the forward
+    
     def forward(self, x, output_shape=None, **kwargs):
        
         """FC_FNO's forward pass"""
@@ -316,12 +316,16 @@ class FC_FNO(FNO):
        
         output_shape = [None] * self.n_layers
 
+
+
         # ==================== EXTENSION OPERATION ===============================
         if self.n_dim == 3:
             __, __, x_res, y_res, z_res = x.shape
             original = x
             x = self.FC_obj.extend_signal(x)
 
+
+            # uncomment this to show the colour map for each input batch
             # self.FC_obj.plot_results(original, x)
             
         else:
@@ -329,9 +333,17 @@ class FC_FNO(FNO):
         # =========================================================================
         
 
+
+
+
+
         # append spatial pos embedding if set (extra features)
         if self.positional_embedding is not None:
             x = self.positional_embedding(x)
+
+
+
+
 
 
         #======================== LIFTING OPERATION ===============================
@@ -384,6 +396,9 @@ class FC_FNO(FNO):
 
         X1 = Q1(x.permute(0,2,3,4,1))
         Dx_arr = self.dQ_3D(X1, Dx_arr, Q1, Q2, derivs_to_compute)
+
+        
+
 
         
       

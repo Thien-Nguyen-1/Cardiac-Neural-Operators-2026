@@ -57,6 +57,25 @@ Each results folder includes **side-by-side animations** comparing model predict
     ```
 ---
 
+## Running Fourier Continuation
+1. **Run Training**
+To train the PINO model using Fourier continuation, run the training script using the following command:
+
+```bash
+python PINO_Train.py -d <dataset_path> -p_meth fourier_continuation
+```
+
+Note: Only multi-frame training is supported for now.
+
+2. **Displaying Results**
+To display how specific metrics vary during the training phase between different models, run the data analyser script using the following command:
+
+```bash
+python DataLoss_Analyser.py -d <training_log_1_path> <training_log_2_path> -m <metric>
+```
+
+Note: It is important that the training log path for Fourier continuation is entered as the first argument for **`-d`**. The argument for **`-m`** can either be: **`train_err, phys_loss, mse, rmse`** or **`epoch_train_time`**
+
 ## Citation
 If you use this repository in your work, please cite:  
 > *"Physics-Informed Neural Operators for Cardiac Electrophysiology"*  
